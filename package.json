@@ -9,5 +9,8 @@
     "server:dev": "npm --prefix server run dev",
     "server:build": "npm --prefix server run build",
     "install:all": "npm --prefix client install && npm --prefix server install"
+  },
+  "devDependencies": {
+    "@neon/config": "^1.8.3"
   }
 }

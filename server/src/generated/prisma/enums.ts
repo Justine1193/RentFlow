@@ -11,7 +11,17 @@
 
 export const Role = {
   TENANT: 'TENANT',
-  LANDLORD: 'LANDLORD'
+  LANDLORD: 'LANDLORD',
+  ADMIN: 'ADMIN'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const UnitStatus = {
+  VACANT: 'VACANT',
+  OCCUPIED: 'OCCUPIED',
+  MAINTENANCE: 'MAINTENANCE'
+} as const
+
+export type UnitStatus = (typeof UnitStatus)[keyof typeof UnitStatus]

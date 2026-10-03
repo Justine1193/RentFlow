@@ -7,6 +7,35 @@ export interface User {
   updatedAt?: string;
 }
 
+export interface Property {
+  id: string;
+  name: string;
+  address: string;
+  ownerId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  _count?: {
+    units: number;
+  };
+}
+
+export type UnitStatus = "VACANT" | "OCCUPIED" | "MAINTENANCE";
+
+export interface Unit {
+  id: string;
+  unitNumber: string;
+  rentAmount: number;
+  status: UnitStatus;
+  propertyId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  property?: {
+    id: string;
+    name: string;
+    address: string;
+  };
+}
+
 export interface AuthResponse {
   user: User;
 }
@@ -109,5 +138,83 @@ export const authApi = {
   getCurrentUser: () =>
     apiRequest<AuthResponse>("/api/auth/me", {
       method: "GET",
+    }),
+};
+
+/**
+ * Property API methods
+ */
+export const propertyApi = {
+  list: () =>
+    apiRequest<{ properties: Property[] }>("/api/properties", {
+      method: "GET",
+    }),
+
+  getById: (id: string) =>
+    apiRequest<{ property: Property }>(`/api/properties/${id}`, {
+      method: "GET",
+    }),
+
+  create: (data: { name: string; address: string }) =>
+    apiRequest<{ property: Property }>("/api/properties", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  update: (id: string, data: { name?: string; address?: string }) =>
+    apiRequest<{ property: Property }>(`/api/properties/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
+  delete: (id: string) =>
+    apiRequest<MessageResponse>(`/api/properties/${id}`, {
+      method: "DELETE",
+    }),
+};
+
+/**
+ * Unit API methods
+ */
+export const unitApi = {
+  list: (propertyId?: string) => {
+    const query = propertyId ? `?propertyId=${encodeURIComponent(propertyId)}` : "";
+    return apiRequest<{ units: Unit[] }>(`/api/units${query}`, {
+      method: "GET",
+    });
+  },
+
+  getById: (id: string) =>
+    apiRequest<{ unit: Unit }>(`/api/units/${id}`, {
+      method: "GET",
+    }),
+
+  create: (data: {
+    propertyId: string;
+    unitNumber: string;
+    rentAmount: number;
+    status?: UnitStatus;
+  }) =>
+    apiRequest<{ unit: Unit }>("/api/units", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  update: (
+    id: string,
+    data: {
+      unitNumber?: string;
+      rentAmount?: number;
+      status?: UnitStatus;
+    }
+  ) =>
+    apiRequest<{ unit: Unit }>(`/api/units/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
+  delete: (id: string) =>
+    apiRequest<MessageResponse>(`/api/units/${id}`, {
+      method: "DELETE",
     }),
 };

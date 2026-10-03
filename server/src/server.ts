@@ -4,8 +4,11 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 
-// Import route handlers
+// Import route handlers and error middleware
 import authRoutes from './routes/auth.route.js';
+import propertyRoutes from './routes/property.routes.js';
+import unitRoutes from './routes/unit.route.js';
+import { errorHandler } from './utils/errors.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -23,13 +26,18 @@ app.use(express.json());
 // Parse incoming cookies from request headers (req.cookies)
 app.use(cookieParser());
 
-// Mount the authentication routes under the /api/auth prefix
-app.use('/api/auth', authRoutes);
-
 // Health check route to verify that the server is online
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ ok: true });
 });
+
+// Mount route handlers under their respective URL prefixes
+app.use('/api/auth', authRoutes);
+app.use('/api/properties', propertyRoutes);
+app.use('/api/units', unitRoutes);
+
+// Global error handler middleware (must come after all routes)
+app.use(errorHandler);
 
 // Start listening for incoming network requests
 app.listen(PORT, () => {

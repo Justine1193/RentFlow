@@ -11,11 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (req: Request, res: Response) => {
-  res.json({
-    status: 'ok',
-    message: 'RentFlow API Server is running!',
-    timestamp: new Date().toISOString(),
-  });
+  res.json({ ok: true });
 });
 
 app.listen(PORT, () => {
